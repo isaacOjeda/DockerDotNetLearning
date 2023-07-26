@@ -1,0 +1,35 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP.NET Core service.
+
+version: '3.4'
+
+services:
+  api:
+    image: dockerdotnetlearningapi
+    build:
+      context: ../src/DockerDotNetLearning.Api/
+      dockerfile: Dockerfile
+    ports:
+      - 5245:80
+    networks:
+      - docker-learning-network
+    depends_on:
+      - db
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "TuPasswordSuperSeguro123!" # Reemplaza con tu contraseña segura para el usuario 'sa'
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - docker-learning-network
+    volumes:
+      - dbdata:/var/opt/mssql
+
+networks:
+  docker-learning-network:
+
+volumes:
+  dbdata:
